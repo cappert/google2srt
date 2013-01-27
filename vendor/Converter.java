@@ -18,7 +18,7 @@
 /**
  *
  * @author kom
- * @version "0.5.1, 06/27/09"
+ * @version "0.5.6, 01/20/13"
  */
 
 import java.io.FileOutputStream;
@@ -164,10 +164,13 @@ public class Converter {
 
 
 
-            text = fill.getTextNormalize(); // text
+            //text = fill.getTextNormalize(); // text
+            text = fill.getText(); // text
             text = text.replaceAll("&quot;", "\"");
             text = text.replaceAll("&amp;", "&");
             text = text.replaceAll("&#39;", "'");
+            text = text.replaceAll("&lt;", "<");
+            text = text.replaceAll("&gt;", ">");
 
             try {
                 f.write(String.valueOf(i+1)); f.write("\r\n");

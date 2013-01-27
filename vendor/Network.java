@@ -18,7 +18,7 @@
 /**
  *
  * @author kom
- * @version "0.5.2, 07/11/09"
+ * @version "0.5.5, 10/09/12"
  */
 
 import java.io.IOException;
@@ -59,7 +59,18 @@ public class Network {
             urlLlista = NetSubtitle.getListURL(param, NetSubtitle.tipus.Google);
             docXML = readListURL(urlLlista);
             lSubs = getListSubs(docXML, NetSubtitle.tipus.Google, param);
-        } else if (url.getHost().indexOf("youtube.com") != -1) {
+        } else if (url.getHost().indexOf("youtube.com") != -1
+                || url.getHost().indexOf("youtu.be") != -1) {
+            
+            if (url.getHost().indexOf("youtu.be") != -1) {
+                // http://youtu.be/c8RGPpcenZY => http://www.youtube.com/?v=c8RGPpcenZY
+                
+                String s;
+                try { s = url.getFile(); }
+                catch (Exception e) { s = " "; }
+                
+                url = new URL("http://www.youtube.com/?v=" + s.substring(1, s.length()));
+            }
             param = paramVFromURL(url);
             urlLlista = NetSubtitle.getListURL(param, NetSubtitle.tipus.YouTube);
             docXML = readListURL(urlLlista);

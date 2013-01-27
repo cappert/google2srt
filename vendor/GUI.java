@@ -18,7 +18,7 @@
 /**
  *
  * @author kom
- * @version "0.5.2, 07/11/09"
+ * @version "0.5.5, 10/09/12"
  */
 
 
@@ -28,15 +28,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.MissingResourceException;
 import javax.swing.JFileChooser;
 
 
 
 public class GUI extends javax.swing.JFrame {
     TableModel tablemodel;
-    java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("Bundle");
-    enum tIdioma {CA, ES, EN};
-    private tIdioma idioma = tIdioma.EN;
+    //java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("Bundle");
+    java.util.ResourceBundle bundle = GUI.getBundle();
+    enum tIdioma {ca, es, en, pt_BR, it};
+    //private tIdioma idioma = tIdioma.en;
     private String defaultURL = "";
     private String defaultFile = System.getProperty("user.home") +
                                     System.getProperty("file.separator") +
@@ -46,13 +48,14 @@ public class GUI extends javax.swing.JFrame {
                                     "output.srt";
     private final JFileChooser fc1 = new JFileChooser(),
                                fc2 = new JFileChooser();
-    private List<NetSubtitle> lSubs = null;
+    private List<NetSubtitle> lSubs = null;    
     
     /** Creates new form gui */
     public GUI() {
         initComponents();
 
-        this.canviIdioma(tIdioma.EN);
+        //this.canviIdioma(tIdioma.en);
+        this.canviIdioma(bundle.getLocale().getLanguage());
         this.jtfFEntrada.setText(defaultURL);
         this.jtfFSortida.setText(defaultFileOut);
         
@@ -92,6 +95,9 @@ public class GUI extends javax.swing.JFrame {
         jcbInvertir = new javax.swing.JCheckBox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jtLlistaSubtitols = new javax.swing.JTable();
+        jbutBrasiler = new javax.swing.JButton();
+        jbutItalia = new javax.swing.JButton();
+        jcbTrackName = new javax.swing.JCheckBox();
 
         jmiRetallar.setAction(new javax.swing.text.DefaultEditorKit.CutAction());
         jpmContextual.add(jmiRetallar);
@@ -195,7 +201,7 @@ public class GUI extends javax.swing.JFrame {
 
         jlRetard.setText(bundle.getString("GUI.jlRetard.text")); // NOI18N
 
-        jbutCatala.setFont(new java.awt.Font("Tahoma", 0, 8));
+        jbutCatala.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         jbutCatala.setIcon(new javax.swing.ImageIcon(getClass().getResource("/catalan.jpg"))); // NOI18N
         jbutCatala.setToolTipText(bundle.getString("GUI.jbutCatala.toolTipText")); // NOI18N
         jbutCatala.addActionListener(new java.awt.event.ActionListener() {
@@ -204,7 +210,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jbutCastella.setFont(new java.awt.Font("Tahoma", 0, 8));
+        jbutCastella.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         jbutCastella.setIcon(new javax.swing.ImageIcon(getClass().getResource("/castellano.jpg"))); // NOI18N
         jbutCastella.setToolTipText(bundle.getString("GUI.jbutCastella.toolTipText")); // NOI18N
         jbutCastella.addActionListener(new java.awt.event.ActionListener() {
@@ -213,7 +219,7 @@ public class GUI extends javax.swing.JFrame {
             }
         });
 
-        jbutAngles.setFont(new java.awt.Font("Tahoma", 0, 8));
+        jbutAngles.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
         jbutAngles.setIcon(new javax.swing.ImageIcon(getClass().getResource("/ingles.jpg"))); // NOI18N
         jbutAngles.setToolTipText(bundle.getString("GUI.jbutAngles.toolTipText")); // NOI18N
         jbutAngles.addActionListener(new java.awt.event.ActionListener() {
@@ -241,6 +247,32 @@ public class GUI extends javax.swing.JFrame {
         jtLlistaSubtitols.setModel(new TableModel(java.util.ResourceBundle.getBundle("Bundle")));
         jScrollPane1.setViewportView(jtLlistaSubtitols);
 
+        jbutBrasiler.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jbutBrasiler.setIcon(new javax.swing.ImageIcon(getClass().getResource("/brasileiro.jpg"))); // NOI18N
+        jbutBrasiler.setToolTipText(bundle.getString("GUI.jbutBrasiler.toolTipText")); // NOI18N
+        jbutBrasiler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutBrasilerActionPerformed(evt);
+            }
+        });
+
+        jbutItalia.setFont(new java.awt.Font("Tahoma", 0, 8)); // NOI18N
+        jbutItalia.setIcon(new javax.swing.ImageIcon(getClass().getResource("/italiano.jpg"))); // NOI18N
+        jbutItalia.setToolTipText(bundle.getString("GUI.jbutItalia.toolTipText")); // NOI18N
+        jbutItalia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbutItaliaActionPerformed(evt);
+            }
+        });
+
+        jcbTrackName.setText(bundle.getString("GUI.jcbTrackName.text")); // NOI18N
+        jcbTrackName.setToolTipText(bundle.getString("GUI.jcbTrackName.toolTipText")); // NOI18N
+        jcbTrackName.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbTrackNameActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -248,63 +280,69 @@ public class GUI extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(192, 192, 192)
                                 .addComponent(jrbURL, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jrbXML, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jrbXML, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jlSubOut)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addComponent(jlSubOut)
+                                            .addComponent(jlSubIn)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jbutCatala, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jbutCastella, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jbutAngles, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jbutBrasiler, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jbutItalia, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                        .addGap(1, 1, 1)
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jlRetard)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(jspinnerRetard, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                .addComponent(jtfFEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(jtfFSortida, javax.swing.GroupLayout.PREFERRED_SIZE, 332, javax.swing.GroupLayout.PREFERRED_SIZE))))
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(jcbTot)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jcbInvertir))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jbutCatala, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jcbInvertir)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jbutCastella, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jbutAngles, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addComponent(jlSubIn))
-                                .addGap(13, 13, 13)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jlRetard)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jspinnerRetard, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                                    .addComponent(jtfFEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jtfFSortida, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                        .addComponent(jcbTrackName)))))
                         .addGap(18, 18, 18)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jbutFEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbutFSortida, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbutConvertir, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jbutFEntrada, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                            .addComponent(jbutConvertir, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+                            .addComponent(jbutFSortida, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addComponent(jlEstat, javax.swing.GroupLayout.DEFAULT_SIZE, 558, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE)
+                            .addComponent(jlEstat, javax.swing.GroupLayout.DEFAULT_SIZE, 596, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jbutFEntrada)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jrbURL)
-                            .addComponent(jrbXML))
-                        .addGap(3, 3, 3)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jlSubIn)
-                            .addComponent(jtfFEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jrbURL)
+                    .addComponent(jrbXML))
+                .addGap(3, 3, 3)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jlSubIn)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jtfFEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jbutFEntrada)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtfFSortida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -317,16 +355,19 @@ public class GUI extends javax.swing.JFrame {
                         .addComponent(jspinnerRetard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jbutConvertir))
                     .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(jbutBrasiler, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jbutCatala, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jbutCastella, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jbutAngles, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jbutAngles, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jbutItalia, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jcbTot)
-                            .addComponent(jcbInvertir))))
+                            .addComponent(jcbInvertir)
+                            .addComponent(jcbTrackName))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 127, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jlEstat, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -335,16 +376,27 @@ public class GUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void canviIdioma (tIdioma a) {
-        this.idioma = a;
-        String s;
-        s = a.toString();
+    public static java.util.ResourceBundle getBundle() {
+        java.util.ResourceBundle b;
+        try {
+            b = java.util.ResourceBundle.getBundle("Bundle");
+        } catch (MissingResourceException e) {
+            b = java.util.ResourceBundle.getBundle("Bundle", new java.util.Locale("en"));
+        }
+        return b;
+    }
+    
+    //private void canviIdioma (tIdioma a) {
+    private void canviIdioma (String s) {  
+        //this.idioma = a;
+        //String s;
+        //s = a.toString();
         
         if (s == null)
             bundle = java.util.ResourceBundle.getBundle("Bundle");
         else
-            try { bundle = java.util.ResourceBundle.getBundle("Bundle_" + s.toLowerCase()); }
-            catch (Exception e) { java.util.ResourceBundle.getBundle("Bundle"); }
+            try { bundle = java.util.ResourceBundle.getBundle("Bundle_" + s); } // s.toLowerCase()
+            catch (Exception e) { bundle = java.util.ResourceBundle.getBundle("Bundle"); }
 
 
         if (this.jrbURL.isSelected()) {
@@ -373,6 +425,8 @@ public class GUI extends javax.swing.JFrame {
         this.jcbInvertir.setToolTipText(bundle.getString("GUI.jcbInvertir.toolTipText"));
         this.jcbTot.setText(bundle.getString("GUI.jcbTot.text"));
         this.jcbTot.setToolTipText(bundle.getString("GUI.jcbTot.toolTipText"));
+        this.jcbTrackName.setText(bundle.getString("GUI.jcbTrackName.text"));
+        this.jcbTrackName.setToolTipText(bundle.getString("GUI.jcbTrackName.toolTipText"));
         this.jmiRetallar.setText(bundle.getString("GUI.jmiRetallar.text"));
         this.jmiCopiar.setText(bundle.getString("GUI.jmiCopiar.text"));
         this.jmiAferrar.setText(bundle.getString("GUI.jmiAferrar.text"));
@@ -460,15 +514,19 @@ public class GUI extends javax.swing.JFrame {
                         System.out.println("DEBUG: No s'ha pogut llegir (??)");
                     }
                     
-                    afegitNom = "_";
-                    afegitNom += this.lSubs.get(i).getIdXML();
-                    s = this.lSubs.get(i).getName();
-                    if (s != null)
-                        afegitNom += "_" + s;
-                    s = this.lSubs.get(i).getLang();
-                    if (s != null)
-                        afegitNom += "_" + s;
-                    afegitNom += ".srt";
+                    if (jcbTrackName.isSelected()) {
+                        afegitNom = "_";
+                        afegitNom += this.lSubs.get(i).getIdXML();
+                        s = this.lSubs.get(i).getName();
+                        if (s != null)
+                            afegitNom += "_" + s;
+                        s = this.lSubs.get(i).getLang();
+                        if (s != null)
+                            afegitNom += "_" + s;
+                        afegitNom += ".srt";
+                    } else {
+                        afegitNom = "_" + Integer.toString(i) + ".srt";
+                    }
                     
                     conv = new Converter(
                         this,
@@ -511,15 +569,15 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jbutFSortidaActionPerformed
 
     private void jbutCatalaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCatalaActionPerformed
-        this.canviIdioma(tIdioma.CA);
+        this.canviIdioma("ca");
 }//GEN-LAST:event_jbutCatalaActionPerformed
 
     private void jbutCastellaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutCastellaActionPerformed
-        this.canviIdioma(tIdioma.ES);
+        this.canviIdioma("es");
     }//GEN-LAST:event_jbutCastellaActionPerformed
 
     private void jbutAnglesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutAnglesActionPerformed
-        this.canviIdioma(tIdioma.EN);
+        this.canviIdioma("en");
     }//GEN-LAST:event_jbutAnglesActionPerformed
 
 private void jtfFEntradaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jtfFEntradaFocusGained
@@ -592,6 +650,18 @@ private void jtfFSortidaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST
     }
     
 }//GEN-LAST:event_jtfFSortidaMousePressed
+
+private void jbutBrasilerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutBrasilerActionPerformed
+    this.canviIdioma("pt_BR");
+}//GEN-LAST:event_jbutBrasilerActionPerformed
+
+    private void jbutItaliaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbutItaliaActionPerformed
+        this.canviIdioma("it");
+    }//GEN-LAST:event_jbutItaliaActionPerformed
+
+    private void jcbTrackNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbTrackNameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcbTrackNameActionPerformed
 
 
     
@@ -718,6 +788,12 @@ private void jtfFSortidaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST
             jtfFEntrada.requestFocusInWindow();
             javax.swing.JOptionPane.showMessageDialog(null, msg);
             preparaNova();
+        } catch (Network.NoYouTubeParamV e)
+        {
+            msg = bundle.getString("msg.net.missing.video.param");
+            jtfFEntrada.requestFocusInWindow();
+            javax.swing.JOptionPane.showMessageDialog(null, msg);
+            preparaNova();
         } catch (Exception e) {
             e.printStackTrace();
             msg = bundle.getString("msg.unknown.error");
@@ -746,13 +822,16 @@ private void jtfFSortidaMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton jbutAngles;
+    private javax.swing.JButton jbutBrasiler;
     private javax.swing.JButton jbutCastella;
     private javax.swing.JButton jbutCatala;
     private javax.swing.JButton jbutConvertir;
     private javax.swing.JButton jbutFEntrada;
     private javax.swing.JButton jbutFSortida;
+    private javax.swing.JButton jbutItalia;
     private javax.swing.JCheckBox jcbInvertir;
     private javax.swing.JCheckBox jcbTot;
+    private javax.swing.JCheckBox jcbTrackName;
     private javax.swing.JLabel jlEstat;
     private javax.swing.JLabel jlRetard;
     private javax.swing.JLabel jlSubIn;
